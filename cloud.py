@@ -13,7 +13,7 @@ class Cloud:
         #Initializes the paramters
         self.n = num
         self.d = D
-        self.pow = power
+        self.pow = power-1
         self.l = L
         #Determines the density grid
         self.densityGrid = self._init_DensityGrid()
@@ -31,7 +31,7 @@ class Cloud:
         #Will make N* len(prevPoints) new points in the array
         for i in range(self.pow):
             #Makes a new array of lerger length
-            newPoints = np.zeros((len(prevPoints)*self.n),3)
+            newPoints = np.zeros((len(prevPoints)*self.n,3))
             #Gets N new points for each point to determine the 
             for i in range(len(prevPoints)):
                 delta = np.exp(np.log(self.n)/self.d)
@@ -43,3 +43,5 @@ class Cloud:
     def _wrap_Points(self,points):
         #TODO implment point wrapping
         return points
+    def GetPoints(self):
+        return self.points
