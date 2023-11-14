@@ -21,6 +21,20 @@ class PointGenerator:
         return points
     
     @staticmethod
+    def GeneratePointsOnSphere(N,R,C):
+        points = np.random.rand((N,3))
+        for i in range(N):
+            point = points[i]
+            point[0] = R
+            point[1] = point[1] * np.pi
+            point[2] = point[2] * 2 * np.pi
+            point = PointGenerator.SphericalToRectangular(point)
+            point += C
+            points[i] = point
+        
+        return points
+    
+    @staticmethod
     def SphericalToRectangular(p):
         r = p[0]
         t = p[1]
