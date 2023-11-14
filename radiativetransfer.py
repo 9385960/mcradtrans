@@ -16,3 +16,7 @@ def theta(p,g):
     denom = 2*g
     return num/denom
 
+def azimuthal(p):
+    """Defined after eqn (A5), gives the azimuthal angle as a function of a random variable p (different p from theta)"""
+    return 2*np.pi*p
+    
