@@ -10,7 +10,7 @@ class Cloud:
     #power, the power that will raise the number of points by so that Ntot = num^power
     #D, the fractal dimension of the cloud
     #num_divisions, how many divisions each axis should be broken up into to generate subcubes
-    def __init__(self,L,num,power,D,num_divisions = 4, particle_mass = 1):
+    def __init__(self,L,num,power,D,num_divisions = 4, particle_mass = 1,density_offset = 0):
         #Initializes the paramters
         self.n = num
         self.d = D
@@ -18,6 +18,7 @@ class Cloud:
         self.l = L
         self.divisions = num_divisions
         self.m = particle_mass
+        self.doffset = density_offset
         #Gets the points inside the cube
         self.points = self._init_Points()
         #Determines the density grid
@@ -27,8 +28,8 @@ class Cloud:
         #TODO implement the density grid as described in the paper
         #Currently a density grid of all zeros returned
         densities = np.zeros((self.divisions,self.divisions,self.divisions))
+        length = self.l/self.divisions
         for i in range(len(self.points)):
-            length = self.l/self.divisions
             point = self.points[i]
             x_index = (int)(np.floor(point[0]/length))
             y_index = (int)(np.floor(point[1]/length))
@@ -40,7 +41,7 @@ class Cloud:
         for i in range(len(densities)):
             for j in range(len(densities[i])):
                 for k in range(len(densities[i][j])):
-                    densities[i][j][k] = densities[i][j][k]/volume
+                    densities[i][j][k] = densities[i][j][k]/volume + self.doffset
             
         return densities
     def _init_Points(self):

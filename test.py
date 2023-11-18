@@ -4,7 +4,7 @@ from pointgenerator import PointGenerator
 import numpy as np
 import density_visualizer as dv
 
-c = Cloud(2,10,1,2.3)
+c = Cloud(2,10,3,2.3,num_divisions=4,density_offset=1)
 
 points = c.GetPoints()
 
