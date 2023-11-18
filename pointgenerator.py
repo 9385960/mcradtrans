@@ -1,15 +1,18 @@
 import numpy as np
 
+#Class for generating random points
 class PointGenerator:
+    #Allows for a seed to be set for pseudo random number generation
     @staticmethod
     def SetSeed(seed):
         np.random.seed(seed)
         return
+    #Generates N points uniformly inside a box
     @staticmethod
     def GeneratePointsInBox(N,L):
         points = L*np.random.rand(N,3)
         return points
-        
+    #Generates points uniformly inside a sphere
     @staticmethod
     def UniformPointsInSphere(N,R,C):
         points = np.random.rand(N,3)
@@ -23,7 +26,7 @@ class PointGenerator:
             points[i] = point
         
         return points
-    
+    #Generates points uniformly inside a sphere by sampling in a rectangle and rejecting those points that lie outside the sphere
     @staticmethod
     def UniformRejectionPointsInSphere(N,R,C):
         points = np.random.rand(N,3)
@@ -42,7 +45,8 @@ class PointGenerator:
             points[i] = point
         
         return points
-    
+    #Non uniform generation of points in a sphere
+    #Should be avoided
     @staticmethod
     def GeneratePointsInSphere(N,R,C):
         points = np.random.rand(N,3)
@@ -56,7 +60,9 @@ class PointGenerator:
             points[i] = point
         
         return points
-    
+    #Generates points on the surface of a sphere
+    #Most likely not uniformly generated
+    #Theta is not picked properly
     @staticmethod
     def GeneratePointsOnSphere(N,R,C):
         points = np.random.rand(N,3)
@@ -70,7 +76,7 @@ class PointGenerator:
             points[i] = point
         
         return points
-    
+    #Converts spherical to rectangular coordinates
     @staticmethod
     def SphericalToRectangular(p):
         r = p[0]

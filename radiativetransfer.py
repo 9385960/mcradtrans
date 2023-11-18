@@ -1,5 +1,5 @@
 import numpy as np
-
+#Functions defined in the paper
 def weight(tau_a_tot):
     return np.exp(-tau_a_tot)
 

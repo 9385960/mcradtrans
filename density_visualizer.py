@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+#Function to generate a cube to be visualized
 def generate_cube(side_length, bottom_left_front, color='cyan'):
+    #Uses the bottom left corner to get position x y and z of the bottom corner
     x, y, z = bottom_left_front
 
     # Define cube vertices
@@ -20,16 +22,17 @@ def generate_cube(side_length, bottom_left_front, color='cyan'):
         [cube_definition[0], cube_definition[3], cube_definition[7], cube_definition[4]],  # left face
         [cube_definition[1], cube_definition[2], cube_definition[6], cube_definition[5]],  # right face
     ]
-
+    #Returns the cube
     return [cube_definition, cube_faces, color]
-
+#Function to plot cubes with optional data
 def plot_cubes(cube_data,additional_data = False,x = [],y = [],z = []):
+    #Creates plot
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    
+    #If additional data is to be plotted it will be added here
     if(additional_data):
         ax.scatter3D(x,y,z,color = "green")
-
+    #Goes over every cube in the cube data array
     for cube_definition, cube_faces, color in cube_data:
         # Plotting cube faces and edges with specified color
         cube = Poly3DCollection(cube_faces, alpha=color[-1], facecolors=color, edgecolors=color)
@@ -43,19 +46,10 @@ def plot_cubes(cube_data,additional_data = False,x = [],y = [],z = []):
     ax.set_ylim(min_range, max_range)
     ax.set_zlim(min_range, max_range)
     
-    # Customize plot
+    # Labels plot
     ax.set_xlabel('X axis')
     ax.set_ylabel('Y axis')
     ax.set_zlabel('Z axis')
-    ax.set_title('Cubes with Faces and Edges')
+    ax.set_title('Density Plot')
 
     plt.show()
-
-# Example usage
-#side_length = 3
-#cubes = [
-#    generate_cube(side_length, [2, 2, 2], [0.2,0.2,0.2,0.1]),   # Cube 1 with cyan color
-#    generate_cube(side_length, [5, 5, 5], 'magenta')  # Cube 2 with magenta color
-#    # Add more cubes here with colors if needed
-#]
-#plot_cubes(cubes)

@@ -64,19 +64,23 @@ class Cloud:
         return prevPoints
     #Needs to check that all points lie inside the cube and if any fall outside the cube they should be wrapped around to the other side
     def _wrap_Points(self,points):
+        #Loops over all points
         for i in range(len(points)):
+            #Checks if x is outside [0,L] and updates it accordingly
             if(points[i][0] < 0):
                 while(points[i][0] < 0):
                     points[i][0] += self.l
             elif(points[i][0] > self.l):
                 while(points[i][0] > self.l):
                     points[i][0] -= self.l
+            #Checks if y is outside [0,L] and updates it accordingly
             if(points[i][1] < 0):
                 while(points[i][1] < 0):
                     points[i][1] += self.l
             elif(points[i][1] > self.l):
                 while(points[i][1] > self.l):
                     points[i][1] -= self.l
+            #Checks if z is outside [0,L] and updates it accordingly
             if(points[i][2] < 0):
                 while(points[i][2] < 0):
                     points[i][2] += self.l
@@ -84,20 +88,27 @@ class Cloud:
                 while(points[i][2] > self.l):
                     points[i][2] -= self.l
         return points
+    #Method to get points
     def GetPoints(self):
         return self.points
+    #Method to get densities
     def GetDensties(self):
         return self.densityGrid
+    #Method to get the number of divisions
     def GetDivisions(self):
         return self.divisions
+    #Method to return side length
     def GetSideLength(self):
         return self.l
+    #Method to get densities
+    #TODO Need to implement interpolation
     def GetDensity(self,point):
+        #Checks if the point is inside the cube
         if(point[0]<0 or point[1]<0 or point[2]<0):
             return 0
         if(point[0]>self.l or point[1]>self.l or point[2]>self.l):
             return 0
-        
+        #Gets the density in the cube that the point lies in if it is inside the total domain
         x_index = (int)(np.floor(point[0]/length))
         y_index = (int)(np.floor(point[1]/length))
         z_index = (int)(np.floor(point[2]/length))
