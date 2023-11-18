@@ -2,6 +2,10 @@ import numpy as np
 
 class PointGenerator:
     @staticmethod
+    def SetSeed(seed):
+        np.random.seed(seed)
+        return
+    @staticmethod
     def GeneratePointsInBox(N,L):
         points = L*np.random.rand(N,3)
         return points

@@ -10,7 +10,7 @@ class Cloud:
     #power, the power that will raise the number of points by so that Ntot = num^power
     #D, the fractal dimension of the cloud
     #num_divisions, how many divisions each axis should be broken up into to generate subcubes
-    def __init__(self,L,num,power,D,num_divisions = 4, particle_mass = 1,density_offset = 0):
+    def __init__(self,L,num,power,D,num_divisions = 4, particle_mass = 1,density_offset = 0,seed = 0):
         #Initializes the paramters
         self.n = num
         self.d = D
@@ -19,6 +19,8 @@ class Cloud:
         self.divisions = num_divisions
         self.m = particle_mass
         self.doffset = density_offset
+        #Sets random number generator seed
+        PointGenerator.SetSeed(seed)
         #Gets the points inside the cube
         self.points = self._init_Points()
         #Determines the density grid

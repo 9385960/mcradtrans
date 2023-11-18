@@ -1,5 +1,11 @@
+import numpy as np
 
-class PhaseFunctions:
+
+class PhaseFunctions:    
+    
+    def __init__(self):
+        self.currentPhaseFunc = 0
+        self.g = 0.2
     
     def HG_phase(self):
         r1 = np.random.rand()
@@ -9,7 +15,13 @@ class PhaseFunctions:
         theta = numerator/denom
         phi = 2*np.pi*r2
         return(theta,phi)
+    
     def Set_g(self,g):
         self.g = g
         return
+    def GetScatterDirection(self):
+        if(self.currentPhaseFunc == 0):
+            return self.HG_phase()
+        else:
+            return 0
     
