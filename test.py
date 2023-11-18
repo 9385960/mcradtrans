@@ -8,7 +8,7 @@ import numpy as np
 
 #points = c.GetPoints()
 
-points = PointGenerator.UniformPointsInSphere(10000,1,np.array([0,0,0]))
+points = PointGenerator.UniformRejectionPointsInSphere(1000,1,np.array([0,0,0]))
 
 #print(points)
 #print(c.GetPoints())

@@ -21,6 +21,25 @@ class PointGenerator:
         return points
     
     @staticmethod
+    def UniformRejectionPointsInSphere(N,R,C):
+        points = np.random.rand(N,3)
+        for i in range(N):
+            point = points[i]
+            pointAccepted = False
+            while(not pointAccepted):
+                point[0] = 2*R*point[0]-R
+                point[1] = 2*R*point[1]-R
+                point[2] = 2*R*point[2]-R
+                if(np.sqrt(point[0]**2+point[1]**2+point[2]**2)>R):
+                    point = np.random.rand(3)
+                else:
+                    pointAccepted = True
+            point += C
+            points[i] = point
+        
+        return points
+    
+    @staticmethod
     def GeneratePointsInSphere(N,R,C):
         points = np.random.rand(N,3)
         for i in range(N):
