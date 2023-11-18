@@ -90,3 +90,14 @@ class Cloud:
         return self.divisions
     def GetSideLength(self):
         return self.l
+    def GetDensity(self,point):
+        if(point[0]<0 or point[1]<0 or point[2]<0):
+            return 0
+        if(point[0]>self.l or point[1]>self.l or point[2]>self.l):
+            return 0
+        
+        x_index = (int)(np.floor(point[0]/length))
+        y_index = (int)(np.floor(point[1]/length))
+        z_index = (int)(np.floor(point[2]/length))
+        
+        return densities[x_index,y_index,z_index]
