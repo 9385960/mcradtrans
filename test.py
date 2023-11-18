@@ -1,13 +1,20 @@
 from cloud import Cloud
 import matplotlib.pyplot as plt
+from pointgenerator import PointGenerator
+import numpy as np
 
-c = Cloud(1,10,3,10)
 
-print(len(c.GetPoints()))
+#c = Cloud(1,10,3,10)
+
+#points = c.GetPoints()
+
+points = PointGenerator.UniformPointsInSphere(10000,1,np.array([0,0,0]))
+
+#print(points)
 #print(c.GetPoints())
-x = c.GetPoints()[:,0]
-y = c.GetPoints()[:,1]
-z = c.GetPoints()[:,2]
+x = points[:,0]
+y = points[:,1]
+z = points[:,2]
 
 fig = plt.figure(figsize = (10, 7))
 ax = plt.axes(projection ="3d")
