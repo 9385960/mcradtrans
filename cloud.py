@@ -27,7 +27,6 @@ class Cloud:
         self.densityGrid = self._init_DensityGrid()
     #Computes a density grid
     def _init_DensityGrid(self):
-        #TODO implement the density grid as described in the paper
         #Currently a density grid of all zeros returned
         densities = np.zeros((self.divisions,self.divisions,self.divisions))
         length = self.l/self.divisions
@@ -36,7 +35,7 @@ class Cloud:
             x_index = (int)(np.floor(point[0]/length))
             y_index = (int)(np.floor(point[1]/length))
             z_index = (int)(np.floor(point[2]/length))
-            densities[x_index,y_index,z_index] += 1*self.m
+            densities[x_index,y_index,z_index] += self.m
         
         volume = (length)**(3)
         
@@ -103,6 +102,7 @@ class Cloud:
     #Method to get densities
     #TODO Need to implement interpolation
     def GetDensity(self,point):
+        length = self.l/self.divisions
         #Checks if the point is inside the cube
         if(point[0]<0 or point[1]<0 or point[2]<0):
             return 0
@@ -113,4 +113,4 @@ class Cloud:
         y_index = (int)(np.floor(point[1]/length))
         z_index = (int)(np.floor(point[2]/length))
         
-        return densities[x_index,y_index,z_index]
+        return self.densityGrid[x_index,y_index,z_index]

@@ -4,13 +4,19 @@ import numpy as np
 #TODO A simple framework. Many details still missing
 class PhotonPath:
     #Initializes the photon object
-    def __init__(self,direction,dl,cloud,scatteringFunc,emission_center,sphere):
+    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,log_path = False):
+        self.dl = dl
         self.ta = 0
         self.d = direction
         self.c = cloud
-        self.p = [0,0,0]
-        self.error
-        self.w
+        self.p = initial_position
+        self.error = 1
+        self.w = 1
+        self.sphere = sphere
+        self.log_path = log_path
+        self.scatteringFunc = scatteringFunc
+        if(log_path):
+            self.path = []
         #Computes the path through the cloud
         self.ComputePath()
         return
@@ -21,13 +27,13 @@ class PhotonPath:
             #Compute a new ts
             newTs = self.Get_ts()
             #Use the new ts to compute the distance to the next scattering event
-            dist = self.GetUpdateDistance(newTs)
+            (tp,dist) = self.GetUpdateDistance(newTs)
             #Update the current photon location
             self.UpdateLocation(self.d,dist)
             #Find a new direction
             self.UpdateDirection()
             #Increment the ta tot
-            self.ta += (1/self.w-1)*newTs
+            self.ta += (1/self.w-1)*tp
         return
             
     #Computes the distance of the current photon position from the sphere center
@@ -36,18 +42,20 @@ class PhotonPath:
         return PhotonPath.GetMagnitude(d_to_r)
     #Updates the location based on a current direction and distance
     def UpdateLocation(self,direction,distance):
+        if(self.log_path):
+            self.path.append(self.p)
         self.p += direction *  distance
     #Computes a new photon trajectory
     def UpdateDirection(self):
         #Gets theta and phi from the scattering function
-        (theta,phi) = scatteringFunc()
+        (theta,phi) = self.scatteringFunc()
         #Turns data into unity vector in spherical coordinates
         dir_s = [1,theta,phi]
         #Returns the direction converted to rectangular
         return PhotonPath.SphericalToRectangular(dir_s)
     #Computes ts based on formula in paper
     def Get_ts(self):
-        return -np.log(np.random.rand)
+        return -np.log(np.random.rand())
     #TODO still unclear how this works. paper says to increment tp until it is within error margine of ts
     def GetUpdateDistance(self,ts):
         #The error margine
@@ -61,11 +69,16 @@ class PhotonPath:
             #We only increase, so the error will just get larger and larger and won't approach ts
             if(tp > ts):
                 break
+            if(dltot > 2*self.sphere.GetRadius()):
+                break
             #Increment tp based on approach in paper
             tp += self.GetSigma()*self.GetDensity()*self.dl
             #Increment the total distance
             dltot += self.dl
-        return dltot
+        return (tp,dltot)
+    
+    def GetPath():
+        return self.path
     #Computes W based on the formula in the paper
     def GetW(self):
         return np.exp(-self.ta)

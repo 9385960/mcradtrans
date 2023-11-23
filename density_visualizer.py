@@ -35,7 +35,7 @@ def plot_cubes(cube_data,additional_data = False,x = [],y = [],z = []):
     #Goes over every cube in the cube data array
     for cube_definition, cube_faces, color in cube_data:
         # Plotting cube faces and edges with specified color
-        cube = Poly3DCollection(cube_faces, alpha=color[-1], facecolors=color, edgecolors=color)
+        cube = Poly3DCollection(cube_faces, alpha=0.1, facecolors=color, edgecolors=color)
         ax.add_collection3d(cube)
 
     # Automatically adjust axes to include all cubes
