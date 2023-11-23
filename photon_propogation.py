@@ -4,13 +4,13 @@ import numpy as np
 #TODO A simple framework. Many details still missing
 class PhotonPath:
     #Initializes the photon object
-    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,log_path = False):
+    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,log_path = False,error_margine = 0.01):
         self.dl = dl
         self.ta = 0
         self.d = direction
         self.c = cloud
         self.p = initial_position
-        self.error = 1
+        self.error = error_margine
         self.w = 1
         self.sphere = sphere
         self.log_path = log_path
@@ -31,9 +31,11 @@ class PhotonPath:
             #Update the current photon location
             self.UpdateLocation(self.d,dist)
             #Find a new direction
-            self.UpdateDirection()
+            self.d = self.UpdateDirection()
             #Increment the ta tot
             self.ta += (1/self.w-1)*tp
+        if(self.log_path):
+            self.path.append(self.p.copy())
         return
             
     #Computes the distance of the current photon position from the sphere center
@@ -43,8 +45,9 @@ class PhotonPath:
     #Updates the location based on a current direction and distance
     def UpdateLocation(self,direction,distance):
         if(self.log_path):
-            self.path.append(self.p)
+            self.path.append(self.p.copy())
         self.p += direction *  distance
+        return
     #Computes a new photon trajectory
     def UpdateDirection(self):
         #Gets theta and phi from the scattering function
@@ -77,7 +80,7 @@ class PhotonPath:
             dltot += self.dl
         return (tp,dltot)
     
-    def GetPath():
+    def GetPath(self):
         return self.path
     #Computes W based on the formula in the paper
     def GetW(self):
@@ -85,7 +88,7 @@ class PhotonPath:
     #Computes Sigma
     #TODO determine what sigma is and implment the function
     def GetSigma(self):
-        return 1
+        return 0.001
     #TODO the paper says to muliply by nh we need to determine if this is really the cloud density
     def GetDensity(self):
         return self.c.GetDensity(self.p)

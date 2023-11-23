@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+import numpy as np
 
 #Function to generate a cube to be visualized
 def generate_cube(side_length, bottom_left_front, color='cyan'):
@@ -53,3 +54,37 @@ def plot_cubes(cube_data,additional_data = False,x = [],y = [],z = []):
     ax.set_title('Density Plot')
 
     plt.show()
+
+
+def add_cubes_plot(cube_data,fig,ax, a = 0.1):
+    #Goes over every cube in the cube data array
+    for cube_definition, cube_faces, color in cube_data:
+        # Plotting cube faces and edges with specified color
+        cube = Poly3DCollection(cube_faces, alpha=a, facecolors=color, edgecolors=color)
+        ax.add_collection3d(cube)
+
+    # Automatically adjust axes to include all cubes
+    all_verts = [v for cube_def, _, _ in cube_data for v in cube_def]
+    max_range = max(max(all_verts))
+    min_range = min(min(all_verts))
+    ax.set_xlim(min_range, max_range)
+    ax.set_ylim(min_range, max_range)
+    ax.set_zlim(min_range, max_range)
+
+def generate_cubes(densities, cube_length, divisions):
+    biggest_density = np.max(densities)
+
+    sideLength = cube_length/divisions
+
+    cubes = [0]*divisions*divisions*divisions
+
+    index = 0
+
+    for i in range(divisions):
+        for j in range(divisions):
+            for k in range(divisions):
+                bottom_left = [sideLength*i,sideLength*j,sideLength*k]
+                normalized_den = densities[i][j][k]/biggest_density
+                cubes[index] = generate_cube(sideLength,bottom_left,[normalized_den,normalized_den,normalized_den,normalized_den])
+                index += 1
+    return cubes

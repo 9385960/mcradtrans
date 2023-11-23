@@ -1,9 +1,7 @@
 from cloud import Cloud
 import matplotlib.pyplot as plt
 from pointgenerator import PointGenerator
-import numpy as np
-import density_visualizer as dv
-
+import density_visualizer as d_v
 c = Cloud(2,10,3,2.3,num_divisions=4,density_offset=1)
 
 points = c.GetPoints()
@@ -32,20 +30,6 @@ densities = c.GetDensties()
 cube_length = c.GetSideLength()
 divisions = c.GetDivisions()
 
-biggest_density = np.max(densities)
+cubes = d_v.generate_cubes(densities,cube_length,divisions)
 
-sideLength = cube_length/divisions
-
-cubes = [0]*divisions*divisions*divisions
-
-index = 0
-
-for i in range(divisions):
-    for j in range(divisions):
-        for k in range(divisions):
-            bottom_left = [sideLength*i,sideLength*j,sideLength*k]
-            normalized_den = densities[i][j][k]/biggest_density
-            cubes[index] = dv.generate_cube(sideLength,bottom_left,[normalized_den,normalized_den,normalized_den,normalized_den])
-            index += 1
-
-dv.plot_cubes(cubes,additional_data=True,x=x,y=y,z=z)
+d_v.plot_cubes(cubes,additional_data=True,x=x,y=y,z=z)
