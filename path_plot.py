@@ -3,6 +3,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 def plot_path(x,y,z):
+    #Compute arrow lengths
     lengths = np.sqrt(np.diff(x)**2 + np.diff(y)**2 + np.diff(z)**2)
 
     # Create a 3D plot
@@ -30,7 +31,7 @@ def plot_path(x,y,z):
     plt.show()
 
 def add_path_plot(x,y,z,fig,ax):
-
+    #Compute arrow lengths
     lengths = np.sqrt(np.diff(x)**2 + np.diff(y)**2 + np.diff(z)**2)
 
     # Plot the path

@@ -5,7 +5,7 @@ class PhaseFunctions:
     #intializes the object
     def __init__(self):
         self.currentPhaseFunc = 0
-        self.g = 0.2
+        self.g = 0.2   
     #The HG phase function as defined in the paper
     def HG_phase(self):
         r1 = np.random.rand()

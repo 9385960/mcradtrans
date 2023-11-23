@@ -71,20 +71,23 @@ def add_cubes_plot(cube_data,fig,ax, a = 0.1):
     ax.set_ylim(min_range, max_range)
     ax.set_zlim(min_range, max_range)
 
+#A function for generating the density cubes for the plot
 def generate_cubes(densities, cube_length, divisions):
+    #Gets the largest density value
     biggest_density = np.max(densities)
-
+    #Computes the side length of the box
     sideLength = cube_length/divisions
-
+    #Creates an array to store all the cubes
     cubes = [0]*divisions*divisions*divisions
-
+    #Index to keep track of the cubes created so far
     index = 0
-
-    for i in range(divisions):
+    #loops over every cube and creates a cube in the cubes array
+    for i in range(divisions):  
         for j in range(divisions):
             for k in range(divisions):
                 bottom_left = [sideLength*i,sideLength*j,sideLength*k]
                 normalized_den = densities[i][j][k]/biggest_density
                 cubes[index] = generate_cube(sideLength,bottom_left,[normalized_den,normalized_den,normalized_den,normalized_den])
                 index += 1
+    #returns the cubes created
     return cubes

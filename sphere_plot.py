@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+#Create and immediately show a sphere
 def plot_sphere(r,c,a):
     center_x, center_y, center_z = c  # New center coordinates
 
@@ -27,7 +27,7 @@ def plot_sphere(r,c,a):
 
     # Show plot
     plt.show()
-
+#Add a sphere to an existing plot
 def add_sphere_plot(r,c,a,fig,ax):
     center_x, center_y, center_z = c  # New center coordinates
 
