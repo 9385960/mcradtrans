@@ -11,6 +11,8 @@ import density_visualizer as dv
 def main(): 
     #Get phase function
     func = PhaseFunctions()
+    #Set the g value
+    func.Set_g(0.5)
     #initialize cloud
     c = Cloud(1,32,4,2.3,density_offset=1)
     #Create inscribed sphere
