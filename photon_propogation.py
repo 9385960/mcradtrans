@@ -4,14 +4,17 @@ import numpy as np
 #TODO A simple framework. Many details still missing
 class PhotonPath:
     #Initializes the photon object
-    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,log_path = False,error_margine = 0.01):
+    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,albedo,sigma,log_path = False,error_margine = 0.01):
+        self.ts_tot = 0
+        self.sigma = sigma
         self.dl = dl
         self.ta = 0
+        self.dist_traveled = 0
         self.d = direction
         self.c = cloud
         self.p = initial_position
         self.error = error_margine
-        self.w = 1
+        self.w = albedo
         self.sphere = sphere
         self.log_path = log_path
         self.scatteringFunc = scatteringFunc
@@ -42,6 +45,10 @@ class PhotonPath:
     def GetDistFromCenter(self):
         d_to_r = self.p - self.sphere.GetCenter()
         return PhotonPath.GetMagnitude(d_to_r)
+    #Computes the distance of the current photon position from the sphere center
+    def GetPointFromCenter(self,point):
+        d_to_r = point - self.sphere.GetCenter()
+        return PhotonPath.GetMagnitude(d_to_r)
     #Updates the location based on a current direction and distance
     def UpdateLocation(self,direction,distance):
         if(self.log_path):
@@ -59,7 +66,7 @@ class PhotonPath:
     #Computes ts based on formula in paper
     def Get_ts(self):
         return -np.log(np.random.rand())
-    #TODO still unclear how this works. paper says to increment tp until it is within error margine of ts
+    #Increments the path based on some new tprime
     def GetUpdateDistance(self,ts):
         #The error margine
         margine = self.error
@@ -72,12 +79,15 @@ class PhotonPath:
             #We only increase, so the error will just get larger and larger and won't approach ts
             if(tp > ts):
                 break
-            if(dltot > 2*self.sphere.GetRadius()):
+            new_point = self.p + dltot*self.d
+            if(self.GetPointFromCenter(new_point) > self.sphere.GetRadius()):
                 break
             #Increment tp based on approach in paper
-            tp += self.GetSigma()*self.GetDensity()*self.dl
+            tp += self.GetSigma()*self.GetDensity(new_point)*self.dl
             #Increment the total distance
             dltot += self.dl
+        self.dist_traveled += dltot
+        self.ts_tot += tp
         return (tp,dltot)
     
     def GetPath(self):
@@ -85,14 +95,21 @@ class PhotonPath:
     #Computes W based on the formula in the paper
     def GetW(self):
         return np.exp(-self.ta)
-    #Computes Sigma
-    #TODO determine what sigma is and implment the function
+    #Returns Tau_a
+    def GetTa(self):
+        return self.ta
+    #Returns the total distance traveled
+    def GetDistTot(self):
+        return self.dist_traveled
+    #Returna Sigma
     def GetSigma(self):
-        return 0.001
-    #TODO the paper says to muliply by nh we need to determine if this is really the cloud density
-    def GetDensity(self):
-        return self.c.GetDensity(self.p)
-    
+        return self.sigma
+    #Gets the density at the point specified
+    def GetDensity(self,point):
+        return self.c.GetDensityInterpolated(point)
+    #Returns the total ts experienced by the photon
+    def GetTsTot(self):
+        return self.ts_tot
     #Method to get the magnitude of a vector
     @staticmethod
     def GetMagnitude(point):

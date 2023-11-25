@@ -99,14 +99,14 @@ class Cloud:
     #Method to return side length
     def GetSideLength(self):
         return self.l
-    #Method to get densities
+    #Method to get densities without interpolation
     #TODO Need to implement interpolation
     def GetDensity(self,point):
         length = self.l/self.divisions
         #Checks if the point is inside the cube
         if(point[0]<0 or point[1]<0 or point[2]<0):
             return 0
-        if(point[0]>self.l or point[1]>self.l or point[2]>self.l):
+        if(point[0]>=self.l or point[1]>=self.l or point[2]>=self.l):
             return 0
         #Gets the density in the cube that the point lies in if it is inside the total domain
         x_index = (int)(np.floor(point[0]/length))
@@ -114,3 +114,79 @@ class Cloud:
         z_index = (int)(np.floor(point[2]/length))
         
         return self.densityGrid[x_index,y_index,z_index]
+    #TODO Implement an Interpolation method for the density values
+    def GetDensityInterpolated(self,point):
+        (vals,index) = self.__get_interpolation__vals(point)
+        bottom_left = self.__get_density_position(index[0][0],index[0][1],index[0][2])
+        top_right = self.__get_density_position(index[7][0],index[7][1],index[7][2])
+
+        xd = (point[0] - bottom_left[0])/(top_right[0] - bottom_left[0])
+        yd = (point[1] - bottom_left[1])/(top_right[1] - bottom_left[1])
+        zd = (point[2] - bottom_left[2])/(top_right[2] - bottom_left[2])
+
+        return self.__trilinear_interpolation__(xd,yd,zd,vals)
+    def __trilinear_interpolation__(self,xd,yd,zd,vals):
+        c00 = vals[0]*(1-xd) + vals[4]*xd
+        c01 = vals[1]*(1-xd) + vals[5]*xd
+        c10 = vals[2]*(1-xd) + vals[6]*xd
+        c11 = vals[3]*(1-xd) + vals[7]*xd
+
+        c0 = c00*(1-yd)+c10*yd
+        c1 = c01*(1-yd)+c11*yd
+        return c0*(1-zd) + c1*zd
+    def __get_density_position(self,x_index,y_index,z_index):
+        length = self.l/self.divisions
+        x = x_index*length + length/2
+        y = y_index*length + length/2
+        z = z_index*length + length/2
+        return np.array([x,y,z])
+    def __get_interpolation__vals(self,point):
+        length = self.l/self.divisions
+        translated_point = point - length/2
+        #Gets the density in the cube that the point lies in if it is inside the total domain
+        x_i = (int)(np.floor(translated_point[0]/length))
+        y_i = (int)(np.floor(translated_point[1]/length))
+        z_i = (int)(np.floor(translated_point[2]/length))
+        c000i = [x_i,y_i,z_i]
+        c100i = [x_i+1,y_i,z_i]
+        c010i = [x_i,y_i+1,z_i]
+        c110i = [x_i+1,y_i+1,z_i]
+        c001i = [x_i,y_i,z_i+1]
+        c101i = [x_i+1,y_i,z_i+1]
+        c011i = [x_i,y_i+1,z_i+1]
+        c111i = [x_i+1,y_i+1,z_i+1]
+        indices = np.array([c000i,c001i,c010i,c011i,c100i,c101i,c110i,c111i],dtype=int)
+        vals = np.zeros(8)
+        for i in range(len(indices)):
+            outside_bounds = False
+            for j in range(len(indices[i])):
+                if(indices[i][j] < 0 or indices[i][j] >= (int)(self.divisions)):
+                    outside_bounds = True
+            if(outside_bounds):
+                vals[i] = 0
+            else:
+                vals[i] = self.densityGrid[indices[i][0],indices[i][1],indices[i][2]]
+
+        return (vals,indices)
+    
+    def GetNumPointsInsideSphere(self,s):
+        sphere_center = s.GetCenter()
+        points = self.points
+
+        num_points_in_sphere = 0
+
+        for i in range(len(points)):
+            vec = points[i]-sphere_center
+            distance = Cloud.GetMagnitude(vec)
+            if(distance <= s.GetRadius()):
+                num_points_in_sphere += 1
+
+        return num_points_in_sphere
+    
+    #Method to get the magnitude of a vector
+    @staticmethod
+    def GetMagnitude(point):
+        num = 0
+        for i in range(len(point)):
+            num += point[i]**2
+        return np.sqrt(num)

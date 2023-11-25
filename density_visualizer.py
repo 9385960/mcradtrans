@@ -91,3 +91,13 @@ def generate_cubes(densities, cube_length, divisions):
                 index += 1
     #returns the cubes created
     return cubes
+#Plot a 2d image of the density
+def plot_density_2d(im):
+    plt.imshow(im,cmap='Greys')
+    plt.axis('off')
+    plt.show()
+#Add 2d plot
+def add_plot_density_2d(im):
+    plt.imshow(im,cmap='Greys')
+
+
