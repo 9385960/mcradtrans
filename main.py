@@ -71,7 +71,7 @@ def main():
     z = points[:,2]
 
     #uncomment if the scatter points should be plotted
-    #ax.scatter3D(x, y, z, color = "green")
+    # ax.scatter3D(x, y, z, color = "green")
 
     #Gets the parameters needed to generate the density plot
     densities = c.GetDensties()
