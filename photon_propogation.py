@@ -1,7 +1,7 @@
 from cloud import Cloud
 import numpy as np
 
-#TODO A simple framework. Many details still missing
+
 class PhotonPath:
     #Initializes the photon object
     def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,albedo,sigma,log_path = False,error_margine = 0.01):

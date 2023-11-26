@@ -100,7 +100,6 @@ class Cloud:
     def GetSideLength(self):
         return self.l
     #Method to get densities without interpolation
-    #TODO Need to implement interpolation
     def GetDensity(self,point):
         length = self.l/self.divisions
         #Checks if the point is inside the cube
@@ -114,7 +113,6 @@ class Cloud:
         z_index = (int)(np.floor(point[2]/length))
         
         return self.densityGrid[x_index,y_index,z_index]
-    #TODO Implement an Interpolation method for the density values
     def GetDensityInterpolated(self,point):
         (vals,index) = self.__get_interpolation__vals(point)
         bottom_left = self.__get_density_position(index[0][0],index[0][1],index[0][2])
