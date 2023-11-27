@@ -43,11 +43,11 @@ class PhotonPath:
             
     #Computes the distance of the current photon position from the sphere center
     def GetDistFromCenter(self):
-        d_to_r = self.p - self.sphere.GetCenter()
+        d_to_r = self.p - self.sphere.GetCenter().copy()
         return PhotonPath.GetMagnitude(d_to_r)
     #Computes the distance of the current photon position from the sphere center
     def GetPointFromCenter(self,point):
-        d_to_r = point - self.sphere.GetCenter()
+        d_to_r = point - self.sphere.GetCenter().copy()
         return PhotonPath.GetMagnitude(d_to_r)
     #Updates the location based on a current direction and distance
     def UpdateLocation(self,direction,distance):

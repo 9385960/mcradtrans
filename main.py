@@ -8,13 +8,14 @@ import sphere_plot as splot
 import matplotlib.pyplot as plt
 import density_visualizer as dv
 import matplotlib.animation as animation
+import image
 
 def main(): 
     
     #The paramters that describe the simulation
     cube_length = 1
-    num_points = 32
-    power = 4
+    num_points = 10
+    power = 3
     fractal_dimension = 2.3
     uniform_density = 1
     g = 0.5
@@ -22,7 +23,7 @@ def main():
     optical_depth = 2
     dl = 0.01
     particle_mass = 1
-    divisions = 5
+    divisions = 4
 
     #Get phase function
     func = PhaseFunctions()
@@ -125,6 +126,32 @@ def main():
     plt.show()
     #print(density_im)
     #print(density_im_interpolated)
+    
+    #Set up Camera
+    
+    
+    
+    
+    
+    camera_position = np.array([0.5,-1.5,0.5])
+    cam_sphere = Sphere(2,camera_position)
+    camera_look_dir = np.array([0,1,0])
+    up = np.array([0,0,1])
+    photons_per_pixel = 10
+    
+    width = 100
+    height = 100
+    
+    fov = 60
+    
+    im = image.compute_image(camera_position,camera_look_dir,photons_per_pixel,width,height,up,fov,dl,c,func.GetScatterDirection,cam_sphere,1,sigma)
+    
+    #print(im)
+    
+    plt.imshow(im,cmap="Greys")
+    
+    plt.show()    
+    
     return
 
 main()
