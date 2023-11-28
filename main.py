@@ -160,10 +160,10 @@ def main():
 
     fig, ax = plt.subplots(2,2)
 
-    ax[0,0].set_title("Skymap 1 albedo = 1")
-    ax[0,1].set_title("Skymap 2 albedo = 1")
-    # ax[1,0].set_title("Skymap 1")
-    ax[1,1].set_title("Skymap 2")
+    #ax[0,0].set_title("Skymap 1 albedo = 1")
+    #ax[0,1].set_title("Skymap 2 albedo = 1")
+    #ax[1,0].set_title("Skymap 1")
+    #ax[1,1].set_title("Skymap 2")
 
     img1 = ax[0,0].imshow(im1,cmap = 'Greys')
     img2 = ax[0,1].imshow(im2,cmap ='Greys')
