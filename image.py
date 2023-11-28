@@ -39,18 +39,6 @@ def compute_image(camera_position, view_direction, num_photons, width, height,up
             image[i][j] = image[i][j]/num_photons
             
     return image
-            
-
-    # At this point, ray_directions[i, j] contains the direction of the ray for pixel (i, j)
-
-    
-    
-    
-    return
-
-def compute_pixel_direction(i,j,look_dir,width,height,aspect,up,right):
-    
-    return normalize(look_dir + (2*j/width-1)*aspect*right + (2*i/height-1)*up)
 
 def normalize(vector):
     
