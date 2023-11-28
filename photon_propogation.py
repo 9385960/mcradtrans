@@ -4,7 +4,7 @@ import numpy as np
 
 class PhotonPath:
     #Initializes the photon object
-    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,albedo,sigma,log_path = False,error_margine = 0.01):
+    def __init__(self,direction,dl,cloud,scatteringFunc,sphere,initial_position,albedo,sigma,log_path = False,error_margine = 0.01,max_iters = 1000):
         self.ts_tot = 0
         self.sigma = sigma
         self.dl = dl
@@ -18,6 +18,7 @@ class PhotonPath:
         self.sphere = sphere
         self.log_path = log_path
         self.scatteringFunc = scatteringFunc
+        self.max_iters = max_iters
         if(log_path):
             self.path = []
         #Computes the path through the cloud
@@ -26,7 +27,8 @@ class PhotonPath:
     #This function will compute the path through the cloud
     def ComputePath(self):
         #Executes while the photon is still inside the cloud
-        while(self.GetDistFromCenter()-self.sphere.GetRadius() < 0):
+        iters = 0
+        while(self.GetDistFromCenter()-self.sphere.GetRadius() < 0 and iters < self.max_iters):
             #Compute a new ts
             newTs = self.Get_ts()
             #Use the new ts to compute the distance to the next scattering event
@@ -37,6 +39,7 @@ class PhotonPath:
             self.d = self.UpdateDirection()
             #Increment the ta tot
             self.ta += (1/self.w-1)*tp
+            iters += 1
         if(self.log_path):
             self.path.append(self.p.copy())
         return

@@ -133,22 +133,22 @@ def main():
     
     
     
-    camera_position = np.array([0.5,-1.5,0.5])
+    camera_position = np.array([0.5,0.8,0.5])
     cam_sphere = Sphere(2,camera_position)
     camera_look_dir = np.array([0,1,0])
     up = np.array([0,0,1])
     photons_per_pixel = 10
     
-    width = 100
-    height = 100
+    width = 30
+    height = 30
     
     fov = 60
     
     im = image.compute_image(camera_position,camera_look_dir,photons_per_pixel,width,height,up,fov,dl,c,func.GetScatterDirection,cam_sphere,1,sigma)
     
-    #print(im)
+    print(im)
     
-    plt.imshow(im,cmap="Greys")
+    plt.imshow(im,cmap="binary")
     
     plt.show()    
     
