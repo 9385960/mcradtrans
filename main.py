@@ -60,6 +60,10 @@ def main():
     #Creates a new figure
     fig = plt.figure()
     ax = plt.axes(projection ="3d")
+    ax.set_xlabel('$X$')
+    ax.set_ylabel('$Y$')
+    ax.set_zlabel('$Z$')
+
     #Plots the path
     pplot.add_path_plot(x,y,z,fig,ax)
     #Adds the sphere that the path should be in
@@ -120,7 +124,15 @@ def main():
         img2.set_array(new_im2)
         return img1,img2
     
+    
+
     ani = animation.FuncAnimation(fig,update,frames = frame_num,interval = 50, blit = True)
+
+    ##### Copy this
+    writer = animation.PillowWriter(fps=15,
+                                    metadata=dict(artist='Me'),
+                                    bitrate=1800)
+    ani.save('density.gif', writer=writer)
 
     plt.tight_layout()
     plt.show()
@@ -150,7 +162,7 @@ def main():
 
     ax[0,0].set_title("Skymap 1 albedo = 1")
     ax[0,1].set_title("Skymap 2 albedo = 1")
-    ax[1,0].set_title("Skymap 1")
+    # ax[1,0].set_title("Skymap 1")
     ax[1,1].set_title("Skymap 2")
 
     img1 = ax[0,0].imshow(im1,cmap = 'Greys')
