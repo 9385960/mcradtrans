@@ -115,6 +115,12 @@ class PhotonPath:
         return self.ts_tot
     def GetEndPos(self):
         return self.p
+    def SetAlbedo(self,a):
+        self.w = a
+        self.ta = (1/a-1)*self.ts_tot
+        return
+    def GetAlbedo(self):
+        return self.w
     #Method to get the magnitude of a vector
     @staticmethod
     def GetMagnitude(point):

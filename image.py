@@ -64,7 +64,7 @@ def compute_skymap1(num_photons, width, height,dl,cloud,scatter,sphere,albedo,si
                 image[i][j] += intensity
             image[i][j] = image[i][j]/num_photons
             
-    return (image,photon)
+    return (image,photons)
 
 def normalize(vector):
     
@@ -118,4 +118,105 @@ def compute_skymap2(num_photons, width, height,dl,cloud,scatter,sphere,albedo,si
                 x_index = (int)(np.floor(theta/dtheta))
                 image[y_index][x_index] += 1
             
-    return (image,photon)
+    return (image,photons)
+
+def compute_paths(num_photons, width, height,dl,cloud,scatter,sphere,albedo,sigma):
+    photons = np.empty((width,height,num_photons),dtype=PhotonPath)
+
+    # Calculate viewing direction, right vector, and up vector
+    thetas = np.linspace(0,np.pi,width)
+    phis = np.linspace(0,2*np.pi,height)    
+
+    # Iterate over each pixel in the image
+    for i in range(height):
+        for j in range(width): 
+            x = np.sin(thetas[j])*np.cos(phis[i])
+            y = np.sin(thetas[j])*np.sin(phis[i])
+            z = np.cos(thetas[j])
+            # Calculate ray direction in camera space
+            ray_dir = np.array([x,y,z])
+            for k in range(num_photons):
+                photon  = PhotonPath(ray_dir.copy(),dl,cloud,scatter,sphere,sphere.GetCenter().copy(),albedo,sigma)
+                photons[i][j][k] = photon
+            
+    return photons
+
+def paths_to_skymap1(paths, num_photons, width, height):
+    image = np.zeros((width,height))
+
+    # Iterate over each pixel in the image
+    for i in range(height):
+        for j in range(width): 
+            for k in range(num_photons):
+                photon = paths[i][j][k]
+                intensity = np.exp(-photon.GetTsTot())
+                image[i][j] += intensity
+            image[i][j] = image[i][j]/num_photons
+            
+    return image
+
+#Will compute an image at a specific camera position
+def paths_to_skymap2(paths, num_photons, width, height,sphere):
+    image = np.zeros((width,height))
+
+    # Iterate over each pixel in the image
+    for i in range(height):
+        for j in range(width): 
+            for k in range(num_photons):
+                photon  = paths[i][j][k]
+                end_location = photon.GetEndPos()
+                end_location = end_location - sphere.GetCenter()
+                end_location = rectangular_to_spherical(end_location)
+                theta = end_location[1]
+                phi = end_location[2]
+                dtheta = np.pi/width
+                dphi = 2*np.pi/height
+                y_index = (int)(np.floor(phi/dphi))%height
+                x_index = (int)(np.floor(theta/dtheta))%width
+                image[y_index][x_index] += 1
+            
+    return image
+
+def paths_to_skymap1_albedo(paths, num_photons, width, height,albedo):
+    image = np.zeros((width,height))
+
+    # Iterate over each pixel in the image
+    for i in range(height):
+        for j in range(width): 
+            for k in range(num_photons):
+                photon = paths[i][j][k]
+                albedo_before = photon.GetAlbedo()
+                photon.SetAlbedo(albedo)
+                weight = photon.GetW()
+                image[i][j] += weight
+                photon.SetAlbedo(albedo_before)
+            image[i][j] = image[i][j]/num_photons
+            
+    return image
+
+#Will compute an image at a specific camera position
+def paths_to_skymap2_albedo(paths, num_photons, width, height,sphere,albedo):
+    bins = np.zeros((width,height)) + 1
+    image = np.zeros((width,height))
+    
+    # Iterate over each pixel in the image
+    for i in range(height):
+        for j in range(width): 
+            for k in range(num_photons):
+                photon  = paths[i][j][k]
+                albedo_before = photon.GetAlbedo()
+                photon.SetAlbedo(albedo)
+                end_location = photon.GetEndPos()
+                end_location = end_location - sphere.GetCenter()
+                end_location = rectangular_to_spherical(end_location)
+                theta = end_location[1]
+                phi = end_location[2]
+                dtheta = np.pi/width
+                dphi = 2*np.pi/height
+                y_index = (int)(np.floor(phi/dphi))%height
+                x_index = (int)(np.floor(theta/dtheta))%width
+                image[y_index][x_index] += photon.GetW()
+                bins[y_index][x_index] += 1
+                photon.SetAlbedo(albedo_before)
+    image = np.divide(image,bins)
+    return image

@@ -126,37 +126,52 @@ def main():
     plt.show()
     #print(density_im)
     #print(density_im_interpolated)
-    
-    #Set up Camera
-    
+        
     width = 100
     height = 100
     photons_per_pixel = 5
 
-    (im,paths) = image.compute_skymap1(photons_per_pixel,width,height,dl,c,func.GetScatterDirection,s,albedo,sigma)
+    paths = image.compute_paths(photons_per_pixel,width,height,dl,c,func.GetScatterDirection,s,albedo,sigma)
     
-    plt.imshow(im,cmap="binary")
+    frame_num = 100
+
+    da = .99 / frame_num
+
+    def compute_images(frame):
+        im1 = image.paths_to_skymap1(paths,photons_per_pixel,width,height)
+        im2 = image.paths_to_skymap2(paths,photons_per_pixel,width,height,s)
+        im3 = image.paths_to_skymap1_albedo(paths,photons_per_pixel,width,height,1-da*frame)
+        im4 = image.paths_to_skymap2_albedo(paths,photons_per_pixel,width,height,s,1-da*frame)
+        return im1,im2,im3,im4
     
-    plt.show()  
+    im1,im2,im3,im4 = compute_images(0)
+
+    fig, ax = plt.subplots(2,2)
+
+    ax[0,0].set_title("Skymap 1 albedo = 1")
+    ax[0,1].set_title("Skymap 2 albedo = 1")
+    ax[1,0].set_title("Skymap 1")
+    ax[1,1].set_title("Skymap 2")
+
+    img1 = ax[0,0].imshow(im1,cmap = 'Greys')
+    img2 = ax[0,1].imshow(im2,cmap ='Greys')
+    img3 = ax[1,0].imshow(im3,cmap = 'Greys')
+    img4 = ax[1,1].imshow(im4,cmap = 'Greys')
+
+    def update(frame):
+        new_im1, new_im2, new_im3, new_im4 = compute_images(frame)
+        img1.set_array(new_im1)
+        img2.set_array(new_im2)
+        img3.set_array(new_im3)
+        img4.set_array(new_im4)
+        img3.set_title("Skymap 1 Albedo: "+str(1-da*frame))
+        img4.set_title("Skymap 2 Albedo: "+str(1-da*frame))
+        return img1,img2,img3,img4
     
-    camera_position = np.array([0.5,0.8,0.5])
-    cam_sphere = Sphere(2,camera_position)
-    camera_look_dir = np.array([0,1,0])
-    up = np.array([0,0,1])
-    photons_per_pixel = 10
-    
-    width = 30
-    height = 30
-    
-    fov = 180
-    
-    (im,paths) = image.compute_image(camera_position,camera_look_dir,photons_per_pixel,width,height,up,fov,dl,c,func.GetScatterDirection,cam_sphere,1,sigma)
-    
-    #print(im)
-    
-    plt.imshow(im,cmap="binary")
-    
-    plt.show()    
+    ani = animation.FuncAnimation(fig,update,frames = frame_num,interval = 50, blit = True)
+
+    plt.tight_layout()
+    plt.show()
     
     return
 
