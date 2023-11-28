@@ -113,6 +113,8 @@ class PhotonPath:
     #Returns the total ts experienced by the photon
     def GetTsTot(self):
         return self.ts_tot
+    def GetEndPos(self):
+        return self.p
     #Method to get the magnitude of a vector
     @staticmethod
     def GetMagnitude(point):

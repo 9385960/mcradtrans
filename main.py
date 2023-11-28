@@ -14,8 +14,8 @@ def main():
     
     #The paramters that describe the simulation
     cube_length = 1
-    num_points = 10
-    power = 3
+    num_points = 32
+    power = 4
     fractal_dimension = 2.3
     uniform_density = 1
     g = 0.5
@@ -23,7 +23,7 @@ def main():
     optical_depth = 2
     dl = 0.01
     particle_mass = 1
-    divisions = 4
+    divisions = 5
 
     #Get phase function
     func = PhaseFunctions()
@@ -129,9 +129,15 @@ def main():
     
     #Set up Camera
     
+    width = 100
+    height = 100
+    photons_per_pixel = 5
+
+    (im,paths) = image.compute_skymap1(photons_per_pixel,width,height,dl,c,func.GetScatterDirection,s,albedo,sigma)
     
+    plt.imshow(im,cmap="binary")
     
-    
+    plt.show()  
     
     camera_position = np.array([0.5,0.8,0.5])
     cam_sphere = Sphere(2,camera_position)
@@ -142,11 +148,11 @@ def main():
     width = 30
     height = 30
     
-    fov = 60
+    fov = 180
     
-    im = image.compute_image(camera_position,camera_look_dir,photons_per_pixel,width,height,up,fov,dl,c,func.GetScatterDirection,cam_sphere,1,sigma)
+    (im,paths) = image.compute_image(camera_position,camera_look_dir,photons_per_pixel,width,height,up,fov,dl,c,func.GetScatterDirection,cam_sphere,1,sigma)
     
-    print(im)
+    #print(im)
     
     plt.imshow(im,cmap="binary")
     
