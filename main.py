@@ -164,8 +164,6 @@ def main():
         img2.set_array(new_im2)
         img3.set_array(new_im3)
         img4.set_array(new_im4)
-        img3.set_title("Skymap 1 Albedo: "+str(1-da*frame))
-        img4.set_title("Skymap 2 Albedo: "+str(1-da*frame))
         return img1,img2,img3,img4
     
     ani = animation.FuncAnimation(fig,update,frames = frame_num,interval = 50, blit = True)
